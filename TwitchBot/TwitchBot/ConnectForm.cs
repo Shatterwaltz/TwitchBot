@@ -10,8 +10,8 @@ using System.Windows.Forms;
 using System.IO;
 
 namespace TwitchBot {
-    public partial class Form1 : Form {
-        public Form1() {
+    public partial class ConnectForm : Form {
+        public ConnectForm() {
             InitializeComponent();
         }
         Connection conn;//Connection object
@@ -25,10 +25,16 @@ namespace TwitchBot {
             writer.WriteLine(channel.Text);
             writer.Flush();
             writer.Close();
+
+            //Hide all connection-related controls, they don't serve a purpose anymore.
             user.Visible = false;
             oauth.Visible = false;
             channel.Visible = false;
             connect.Visible = false;
+            label1.Visible = false;
+            label2.Visible = false;
+            label3.Visible = false;
+
         }
 
         private void Form1_Load(object sender, EventArgs e) {

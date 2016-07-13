@@ -1,5 +1,5 @@
 ﻿namespace TwitchBot {
-    partial class Form1 {
+    partial class ConnectForm {
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -90,7 +90,7 @@
             this.connect.UseVisualStyleBackColor = true;
             this.connect.Click += new System.EventHandler(this.connect_Click);
             // 
-            // Form1
+            // ConnectForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -102,8 +102,8 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.oauth);
             this.Controls.Add(this.user);
-            this.Name = "Form1";
-            this.Text = "Form1";
+            this.Name = "ConnectForm";
+            this.Text = "TwitchBot";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
