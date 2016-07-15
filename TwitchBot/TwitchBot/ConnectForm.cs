@@ -22,7 +22,7 @@ namespace TwitchBot {
             StreamWriter writer = new StreamWriter("twitchbotuserinfo");
             writer.WriteLine(user.Text);
             writer.WriteLine(oauth.Text);
-            writer.WriteLine(channel.Text);
+            writer.WriteLine(channel.Text.ToLower());
             writer.Flush();
             writer.Close();
 
@@ -38,10 +38,10 @@ namespace TwitchBot {
         }
 
         private void Form1_Load(object sender, EventArgs e) {
-            if (!File.Exists("twitchbotuserinfo")) {//if file doesn't exist, create it. If it does exist, load the previous connection info
-                File.Create("twitchbotuserinfo");
-
-            } else {
+            /* if (!File.Exists("twitchbotuserinfo")) {//if file doesn't exist, create it. If it does exist, load the previous connection info
+                 File.Create("twitchbotuserinfo");
+             } else {*/
+            if (File.Exists("twitchbotuserinfo")) { 
                 StreamReader reader = new StreamReader("twitchbotuserinfo");
                 if(reader.Peek()!=-1) {
                     user.Text = reader.ReadLine();

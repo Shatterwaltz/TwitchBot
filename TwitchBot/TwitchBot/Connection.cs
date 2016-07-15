@@ -18,11 +18,11 @@ namespace TwitchBot {
             this.botName = botName;
             this.botOauth = botOauth;
             this.channelName = channelName;
-            Connect(); //Call Connect() with info given
+            connect(); //Call Connect() with info given
         }
 
         //Handles connection to Twitch's IRC
-        private void Connect() {
+        private void connect() {
             socket.Connect("irc.chat.twitch.tv", 6667);//Connect to twitch's IRC 
 
             if (!socket.Connected) { //Test if connected successfully
@@ -48,7 +48,7 @@ namespace TwitchBot {
         private void sendMessage(String message) {
             toSocket.WriteLine("PRIVMSG #" + channelName + " :" + message);
             toSocket.Flush();
-            Console.WriteLine("sent help message");
+            Console.WriteLine("Sent message: " + message);
         }
 
         //Will be run as its own thread
@@ -69,7 +69,7 @@ namespace TwitchBot {
                     Console.WriteLine("PING received, PONGed back");
                 }
 
-                messageToSend=logic.parseMessage(lastMessage);
+                messageToSend=logic.parseMessage(lastMessage); //parseMessage will return an empty string if nothing needs to be sent back
                 if (messageToSend.Equals("") != true) {
                     sendMessage(messageToSend);
                 }
