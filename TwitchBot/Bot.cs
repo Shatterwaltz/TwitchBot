@@ -3,9 +3,12 @@ using System.Net.Sockets;
 using System.Threading;
 using System.IO;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Text;
+using System.Runtime.CompilerServices;
 namespace TwitchBot
 {
-    public class Bot
+    public class Bot :INotifyPropertyChanged
     {
         TcpClient Socket = new TcpClient(); //Connection to twitch IRC
         TextReader FromSocket; //Receives data from socket
@@ -19,6 +22,25 @@ namespace TwitchBot
 
         private Queue<string> messages; //Hold the last 300 messages
 
+        public event PropertyChangedEventHandler PropertyChanged; //Event noting when a property has changed
+
+        //Returns messages as a newline separated string
+        public String Messages { get {
+                String[] arr = messages.ToArray();
+                StringBuilder result = new StringBuilder();
+                foreach (String s in arr){
+                    result.Append(s + "\n");
+                }
+                return result.ToString();
+            }}
+
+        //Called to update the PropertyChanged event
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "") {
+            if(PropertyChanged != null) {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
         public string Start(string botUser, string botOauth, string channelName)
         {
             this.BotUser = botUser;
@@ -31,7 +53,7 @@ namespace TwitchBot
 
         private string GetMessageList()
         {
-            return string.Join("\n", messages);
+            return string.Join("\n", Messages);
         }
 
         //Initiate connection to twitch, start ReceiveMessages thread
@@ -91,6 +113,7 @@ namespace TwitchBot
                     else
                     {
                         messages.Enqueue(lastMessage); //Add received message to list of messages
+                        NotifyPropertyChanged("Messages"); //When we update the message list, we trigger the event.
                         if (messages.Count > 300) //If storing more than 300 messages, remove one. 
                         {
                             messages.Dequeue();

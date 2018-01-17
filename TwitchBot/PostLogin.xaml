@@ -9,16 +9,12 @@
       Title="PostLogin">
 
     <Grid>
-        <Grid.Resources>
-            <local:Bot x:Key="bot"/>
-        </Grid.Resources>
-        
+
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <Label Content="{Binding Source={StaticResource bot}}"/>
+        <TextBlock Text="{Binding Path=Messages}" TextWrapping="Wrap"/>
     </Grid>
     
 </Page>
