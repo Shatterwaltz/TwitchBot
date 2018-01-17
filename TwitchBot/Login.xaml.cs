@@ -24,11 +24,13 @@ namespace TwitchBot
             writer.Flush();
             writer.Close();
 
-            //Start the bot logic.       
-            string response = new Bot().Start(BotUser.Text, BotOauth.Password, ChannelName.Text);
+            //Start the bot.    
+            Bot bot = new Bot();
+            //Get result of login attempt
+            string response = bot.Start(BotUser.Text, BotOauth.Password, ChannelName.Text);
             if (response ==null)
             {
-                NavigationService.Navigate(new PostLogin());
+                NavigationService.Navigate(new PostLogin(bot));
             }
             else
             {

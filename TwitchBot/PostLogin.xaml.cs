@@ -20,9 +20,11 @@ namespace TwitchBot
     /// </summary>
     public partial class PostLogin : Page
     {
-        public PostLogin()
+        Bot bot=null;
+        public PostLogin(Bot bot)
         {
             InitializeComponent();
+            this.bot = bot;
         }
     }
 }

@@ -2,31 +2,40 @@
 using System.Net.Sockets;
 using System.Threading;
 using System.IO;
+using System.Collections.Generic;
 namespace TwitchBot
 {
-    class Bot
+    public class Bot
     {
         TcpClient Socket = new TcpClient(); //Connection to twitch IRC
         TextReader FromSocket; //Receives data from socket
         TextWriter ToSocket; //Writes data to socket
 
-        String BotUser; //Store bot's account name
-        String BotOauth; //Store bot's Oauth
-        String ChannelName; //Store channel to join
+        string BotUser; //Store bot's account name
+        string BotOauth; //Store bot's Oauth
+        string ChannelName; //Store channel to join
 
         Thread ReceiveThread; //Thread handling incoming messages
 
-        public String Start(String botUser, String botOauth, String channelName)
+        private Queue<string> messages; //Hold the last 300 messages
+
+        public string Start(string botUser, string botOauth, string channelName)
         {
             this.BotUser = botUser;
             this.BotOauth = botOauth;
             this.ChannelName = channelName;
+            messages = new Queue<string>(301);
             Console.WriteLine(BotUser + " " + BotOauth + " " + ChannelName);
             return Connect();
         }
 
+        private string GetMessageList()
+        {
+            return string.Join("\n", messages);
+        }
+
         //Initiate connection to twitch, start ReceiveMessages thread
-        private String Connect()
+        private string Connect()
         {
             Socket.Connect("irc.chat.twitch.tv", 6667);//Connect to twitch's IRC 
 
@@ -45,7 +54,7 @@ namespace TwitchBot
             ToSocket.WriteLine("JOIN #" + ChannelName);
             ToSocket.Flush();
 
-            String ResponseLine = FromSocket.ReadLine();
+            string ResponseLine = FromSocket.ReadLine();
 
             if (ResponseLine.Contains("failed") || ResponseLine.Contains("Improper"))
                 return "Incorrect Oauth";
@@ -64,7 +73,7 @@ namespace TwitchBot
         //Run as a thread, handles incoming messages
         private void ReceiveMessages()
         {
-            String lastMessage = ""; //stores last received message
+            string lastMessage = ""; //stores last received message
             bool error = false;
             while (!error)
             { //infinite loop
@@ -79,10 +88,19 @@ namespace TwitchBot
                         ToSocket.Flush();
                         Console.WriteLine("PING received, PONGed back");
                     }
+                    else
+                    {
+                        messages.Enqueue(lastMessage); //Add received message to list of messages
+                        if (messages.Count > 300) //If storing more than 300 messages, remove one. 
+                        {
+                            messages.Dequeue();
+                        }
+                        ParseMessage(lastMessage); //Parse the message for bot commands. 
+                    }
                 }
                 catch(NullReferenceException e)
                 {
-                    System.Windows.MessageBox.Show("Post-Login error, god knows what caused this.\nGo log in again.");
+                    System.Windows.MessageBox.Show("This error might be Ben's fault. tell him what was going on when this happened.");
                     error = true;
                 }
             }
